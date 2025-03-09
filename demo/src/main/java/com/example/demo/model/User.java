@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "`Users_table`")
@@ -27,6 +29,13 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "hometown_id") // Foreign key column
     private Hometown hometown;
+
+    // Add relationships
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserInterest> userInterests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserSchool> userSchools = new ArrayList<>();
 
     // Constructors
     public User() {}
@@ -69,4 +78,10 @@ public class User {
 
     public Hometown getHometown() { return hometown; }
     public void setHometown(Hometown hometown) { this.hometown = hometown; }
+
+    public List<UserInterest> getUserInterests() { return userInterests; }
+    public void setUserInterests(List<UserInterest> userInterests) { this.userInterests = userInterests; }
+
+    public List<UserSchool> getUserSchools() { return userSchools; }
+    public void setUserSchools(List<UserSchool> userSchools) { this.userSchools = userSchools; }
 }
