@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
@@ -30,10 +32,23 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody User user) {
         try {
-            User savedUser = userService.registerUser(user);
+            userService.registerUser(user);
             return ResponseEntity.ok().body("{\"message\": \"User registered successfully!\"}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\"error\": \"User registration failed!\"}");
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody Map<String, String> loginRequest) {
+        String email = loginRequest.get("email");
+        String password = loginRequest.get("password");
+
+        Optional<User> userOptional = userService.authenticateUser(email, password);
+        if (userOptional.isPresent()) {
+            return ResponseEntity.ok().body("{\"message\": \"Login successful!\"}");
+        } else {
+            return ResponseEntity.status(401).body("{\"error\": \"Invalid email or password!\"}");
         }
     }
 }
